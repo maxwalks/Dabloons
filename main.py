@@ -49,8 +49,8 @@ async def help(ctx):
 async def hello(ctx):
     await ctx.respond(f"Hello {ctx.author.name}!")
 
-client.slash_command(description="Setup your Dabloons bank.")
-async def setup(ctx):
+@client.slash_command(description="Setup your Dabloons bank.")
+async def dabloons(ctx):
     await ctx.respond("Creating your bank..")
     db[f"{ctx.author.name}"] = "0"
     await asyncio.sleep(2)
@@ -59,7 +59,8 @@ async def setup(ctx):
 @client.slash_command(description="Add Dabloons to your bank.")
 async def add(ctx, amount):
     await ctx.respond("Adding Dabloons..")
-    db[f"{ctx.author.name}"] = db[f"{ctx.author.name}"] + {amount}
+    value = db[f"{ctx.author.name}"]
+    db[f"{ctx.author.name}"] = value + amount
     await asyncio.sleep(2)
     await ctx.send(f"I have added {amount} Dabloons to your account.")
 
@@ -70,11 +71,19 @@ async def reset(ctx):
     await ctx.send("Your Dabloons are now reset.")
 
 @client.slash_command(description="Displays your amount of Dabloons.")
-async def dabloons(ctx):
+async def bank(ctx):
     await ctx.respond("Retrieving Dabloons..")
     value = db[f"{ctx.author.name}"]
     await asyncio.sleep(2)
-    await ctx.send(f"You have {value} Dabloons left")
+    await ctx.send(f"You have {value} Dabloons.")
+
+@client.slash_command(description="Removes Dabloons from bank")
+async def remove(ctx, amount):
+    await ctx.respond("Removing Dabloons..")
+    value = db[f"{ctx.author.name}"]
+    db[f"{ctx.author.name}"] = value - amount
+    await asyncio.sleep(2)
+    await ctx.send(f"I have removed {amount} Dabloons from your bank.")
   
 @client.slash_command(description="Returns the bot's ping")
 async def ping(ctx):
