@@ -31,30 +31,43 @@ async def help(ctx):
     icon = str(ctx.guild.icon.url)
     name = str(ctx.guild.name)
     embed = discord.Embed(
-        title = name + ' Help Center',
+        title = name + ' Dabloon bank',
         description = 'Displays all the commands.',
         color = discord.Color.dark_grey()
     )
     embed.set_footer(text=f'Requested By {ctx.author}')
     embed.set_thumbnail(url=icon)
     embed.add_field(name='/server', value='`Displays server info.`', inline=True)
-    embed.add_field(name='/info', value='`Displays bot info.`', inline=True)
     embed.add_field(name='/givebrain <user>', value='`Gives somoene a free brain.`', inline=False)
     embed.add_field(name='/ping', value='`Displays bot ping`', inline=True)
     embed.add_field(name='/userinfo <user>', value="`Displays the user's info.`", inline=True)
     embed.add_field(name="/meme", value="`Displays a meme from Reddit.`")
+    embed.add_field(name="/dabloons", value="`Setup your Dabloons bank.`")
+    embed.add_field(name="/add", value="`Add Dabloons to your bank`")
+    embed.add_field(name="/reset", value="`Resets all your Dabloons.`")
+    embed.add_field(name="/bank", value="`Displays your amount of Dabloons.`")
+    embed.add_field(name="/remove", value="`Removes Dabloons from your bank.`")
     await ctx.respond(embed=embed)
 
-@client.slash_command(description="Normal slash command for test.")
-async def hello(ctx):
-    await ctx.respond(f"Hello {ctx.author.name}!")
-
 @client.slash_command(description="Setup your Dabloons bank.")
-async def dabloons(ctx):
+async def bank(ctx):
     await ctx.respond("Creating your bank..")
     db[f"{ctx.author.name}"] = "0"
+    value = db[f"{ctx.author.name}"]
     await asyncio.sleep(2)
-    await ctx.send(f"Succesfully created a bank for {ctx.author.name}")
+    icon = (ctx.guild.icon.url)
+    name = (ctx.guild.name)
+    embed = discord.Embed(
+      title = f"{name} Dabloon bank",
+      description = f"Dabloon bank of {ctx.author.name}",
+      color = discord.Color.dark_grey()
+    )
+    embed.set_footer(text=f'Requested By {ctx.author}')
+    embed.set_thumbnail(url=icon)
+    embed.add_field(name="Current balance:", value=f"`{value}`")
+    embed.add_field(name="Succesfully created your Dabloon bank!", value="/bank", inline=False)
+    await ctx.send(embed=embed)
+    
 
 @client.slash_command(description="Add Dabloons to your bank.")
 async def add(ctx, amount):
@@ -62,28 +75,87 @@ async def add(ctx, amount):
     value = db[f"{ctx.author.name}"]
     db[f"{ctx.author.name}"] = value + amount
     await asyncio.sleep(2)
-    await ctx.send(f"I have added {amount} Dabloons to your account.")
+    icon = (ctx.guild.icon.url)
+    name = (ctx.guild.name)
+    embed = discord.Embed(
+      title = f"{name} Dabloon bank",
+      description = f"Dabloon bank of {ctx.author.name}",
+      color = discord.Color.dark_grey()
+    )
+    embed.set_footer(text=f"Requested By {ctx.author}")
+    embed.set_thumbnail(url=icon)
+    embed.add_field(name=f"Added {amount} to your Dabloon bank.", value=f"{value} Dabloons")
+    await ctx.send(embed=embed)
 
-@client.slash_command(description="Resets all your dabloons.")
+@client.slash_command(description="Resets all your Dabloons.")
 async def reset(ctx):
     await ctx.respond("Resetting Dabloons..")
     db[f"{ctx.author.name}"] = "0"
-    await ctx.send("Your Dabloons are now reset.")
+    value = db[f"{ctx.author.name}"]
+    await asyncio.sleep(2)
+    icon = (ctx.guild.icon.url)
+    name = (ctx.guild.name)
+    embed = discord.Embed(
+      title = f"{name} Dabloon bank",
+      description = f"Dabloon bank of {ctx.author.name}",
+      color = discord.Color.dark_grey()
+    )
+    embed.set_footer(text=f"Requested By {ctx.author}")
+    embed.set_thumbnail(url=icon)
+    embed.add_field(name="Your Dabloons are now reset!", value=f"{value} Dabloons")
+    await ctx.send(embed=embed)
 
 @client.slash_command(description="Displays your amount of Dabloons.")
-async def bank(ctx):
+async def balance(ctx):
     await ctx.respond("Retrieving Dabloons..")
     value = db[f"{ctx.author.name}"]
     await asyncio.sleep(2)
-    await ctx.send(f"You have {value} Dabloons.")
+    icon = (ctx.guild.icon.url)
+    name = (ctx.guild.name)
+    embed = discord.Embed(
+      title = f"{name} Dabloon bank",
+      description = f"Dabloon bank of {ctx.author.name}",
+      color = discord.Color.dark_grey()
+    )
+    embed.set_footer(text=f"Requested By {ctx.author}")
+    embed.set_thumbnail(url=icon)
+    embed.add_field(name="Current balance: ", value=f"{value} Dabloons")
+    await ctx.send(embed=embed)
 
-@client.slash_command(description="Removes Dabloons from bank")
+@client.slash_command(description="Removes Dabloons from your bank")
 async def remove(ctx, amount):
     await ctx.respond("Removing Dabloons..")
     value = db[f"{ctx.author.name}"]
     db[f"{ctx.author.name}"] = value - amount
     await asyncio.sleep(2)
-    await ctx.send(f"I have removed {amount} Dabloons from your bank.")
+    icon = (ctx.guild.icon.url)
+    name = (ctx.guild.name)
+    embed = discord.Embed(
+      title = f"{name} Dabloon bank",
+      description = f"Dabloon bank of {ctx.author.name}",
+      color = discord.Color.dark_grey()
+    )
+    embed.set_footer(text=f"Requested By {ctx.author}")
+    embed.set_thumbnail(url=icon)
+    embed.add_field(name=f"I have removed {amount} Dabloons of your bank.", value=f"{value} Dabloons")
+    await ctx.send(embed=embed)
+
+@client.slash_command(description="Deletes your bank database.")
+async def delete(ctx):
+    await ctx.respond("Deleting bank..")
+    del db[f"{ctx.author.name}"]
+    value=db[f"{ctx.author.name}"]
+    await asyncio.sleep(2)
+    icon=(ctx.guild.icon.url)
+    name=(ctx.guild.name)
+    embed=discord.Embed(
+      title=f"{name} Dabloon bank",
+      description=f"Dabloon bank of {ctx.author.name}",
+      color = discord.Color.dark_grey()
+    )
+    embed.set_footer(text=f"Requested By {ctx.author}")
+    embed.set_thumbnail(url=icon)
+    embed.add_field(name="I have deleted your bank database.", value=f"{value} Dabloons")
   
 @client.slash_command(description="Returns the bot's ping")
 async def ping(ctx):
@@ -116,22 +188,12 @@ async def givebrain(ctx, member : discord.Member):
 
 @client.slash_command(description="Displays the user's info.")
 async def userinfo(ctx, user: discord.Member):
-    await ctx.respond("The users name is: `{}`".format(user.name))
-    await ctx.send("The users ID is: `{}`".format(user.id))
-    await ctx.send("The users highest role is: `{}`".format(user.top_role))
+    value = db[f"{user.name}"]
+    await ctx.respond("The user's Dabloon balance is: `{}`".format(value))
+    await ctx.send("The user's ID is: `{}`".format(user.id))
+    await ctx.send("The user's highest role is: `{}`".format(user.top_role))
     await ctx.send("The user joined at: `{}`".format(user.joined_at))
     await ctx.send("The user's account creation date is: `{}`".format(user.created_at))
-
-@client.slash_command()
-@commands.has_permissions(administrator=True)
-async def giveaway(ctx):
-    message = await ctx.respond('Giveaway')
-    await ctx.message.add_reaction(thumb_up)
-    message = message.id
-    users = [user async for user in reaction.users()]
-    winner = random.choice(users)
-    await ctx.respond(f'{winner} has won the raffle.')
-
 
 BOT_TOKEN = os.environ['BOT_TOKEN']
 client.loop.create_task(bot_activity())
